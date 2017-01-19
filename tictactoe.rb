@@ -12,9 +12,18 @@ class Board
 	end
 
 	def draw
+=begin
 		puts "[#{@first_row.join('][')}]"
 		puts "[#{@second_row.join('][')}]"
 		puts "[#{@third_row.join('][')}]"
+=end
+		puts "[#{@complete[0].join('][')}]"
+		puts "[#{@complete[1].join('][')}]"
+		puts "[#{@complete[2].join('][')}]"
+	end
+
+	def move (marker, row, column)
+		@complete[row][column] = marker
 	end
 
 	def is_full?
@@ -24,15 +33,10 @@ class Board
 	end
 
 	def winner?
-		case 
-		when @first_row.all? && @first_row.uniq.length == 1
-			true
-		when @
-			
+		if @complete.find { |row| row.uniq.length == 1 if row[0] }
+			a = @complete.find { |row| row.uniq.length == 1 if row[0] }
 		end
-
 	end
-
 end
 
 class Player
@@ -45,6 +49,15 @@ class Player
 
 		@@count+=1
 
+	end
+
+	def id_coin_flip
+		case Random.new.rand(2)
+		when 0
+			@id = "X"
+		when 1
+			@id = "O"
+		end
 	end
 
 end
@@ -62,6 +75,23 @@ def game
 	puts "Please enter a name for Player 2:"
 	p2 = Player.new(gets.chomp)
 
+	puts "'1': Choose own markers
+	or
+	'2': Coin flip (X/O)?"
+
+	case gets.chomp
+	when '1'
+		puts "Assign a marker for #{p1.name}:"
+		p1.id = gets.chomp
+		puts "Assign a marker for #{p2.name}:"
+		p2.id = gets.chomp
+	when '2'
+		puts "Who flips the coin?
+		'1': Player 1
+		'2': Player 2"
+
+	end
+
 end
 
 def run
@@ -72,7 +102,8 @@ def run
 	case player_mode
 	when '1'
 		#initialize single-player game
-		puts '1-Player'
+		puts
+		puts '-----1-Player-----'
 		board = Board.new
 		board.draw
 	when '2'
