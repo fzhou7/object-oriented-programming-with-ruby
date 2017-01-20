@@ -84,6 +84,7 @@ class Board
 
 	def victory (player_name)
 		puts "#{player_name.name} wins!"
+		play_again?
 	end
 end
 
