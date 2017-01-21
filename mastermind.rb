@@ -30,7 +30,7 @@ class Combination
 	end
 
 	def set(input, spot)
-		if input.is_a? Integer
+		if input.to_i > 0 && input.to_i <= 8
 			case spot
 			when 0
 				@first = @@colors[input]
@@ -49,7 +49,7 @@ class Combination
 				set(input, spot)
 			end
 		elsif input.is_a? String
-			if colors.any? { |key, value| value == input.upcase}
+			if @@colors.any? { |key, value| value == input.upcase}
 				@first = input.upcase
 				@combo[spot] = input.upcase
 			end
@@ -154,11 +154,12 @@ def single_player
 				victory
 			end
 		end
+		puts "Guesses: #{guesses.size}\tGuesses left: #{12-guesses.size}"
 		puts "\nEnter a combination:\n"
 		show_options
 		guess = Guess.new
 		for i in (0...4) do
-			guess.set(gets.chomp.to_i, i)
+			guess.set(gets.chomp, i)
 		end
 		guess.check(cpu)
 		guesses << guess
