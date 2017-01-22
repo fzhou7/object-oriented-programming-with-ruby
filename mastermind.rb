@@ -4,6 +4,17 @@ class Hash
 	end
 end
 
+class Player
+	attr_accessor :name
+	def initialize name
+		@name = name
+	end
+end
+
+def input_error
+	puts "Error: Input Not Recognized"
+end
+
 class Combination
 	attr_accessor :first, :second, :third, :fourth, :combo
 	@@colors = {
@@ -33,17 +44,17 @@ class Combination
 		if input.to_i > 0 && input.to_i <= 8
 			case spot
 			when 0
-				@first = @@colors[input]
-				@combo[spot] = @@colors[input]
+				@first = @@colors[input.to_i]
+				@combo[spot] = @@colors[input.to_i]
 			when 1
-				@second = @@colors[input]
-				@combo[spot] = @@colors[input]
+				@second = @@colors[input.to_i]
+				@combo[spot] = @@colors[input.to_i]
 			when 2
-				@third = @@colors[input]
-				@combo[spot] = @@colors[input]
+				@third = @@colors[input.to_i]
+				@combo[spot] = @@colors[input.to_i]
 			when 3
-				@fourth = @@colors[input]
-				@combo[spot] = @@colors[input]
+				@fourth = @@colors[input.to_i]
+				@combo[spot] = @@colors[input.to_i]
 			else
 				input_error
 				set(input, spot)
@@ -121,8 +132,10 @@ def show_options
 	puts "5 => BLUE | 6 => PURPLE | 7 => WHITE | 8 => BLACK"
 end
 
-def victory
-	puts "Congratulations, you won! Play again?(y/n)"
+def victory (&cpu_combination)
+	puts "\nCongratulations, you won!"
+	yield
+	puts "\nPlay again?(y/n)"
 	case gets.chomp
 	when 'y'
 		run
@@ -134,12 +147,8 @@ def victory
 	end
 end
 
-def input_error
-	puts "Error: Input Not Recognized"
-end
-
 def single_player
-	puts "-----Single Player!-----"
+	puts "\n-----Single Player!-----"
 	puts
 	cpu = CPUComb.new
 	puts "Computer combo generated!" if cpu
@@ -149,9 +158,10 @@ def single_player
 		guesses.each do |i|
 			i.show_details
 			if i.correct_positions == 4
-				puts "\nCPU Combination: "
-				cpu.show
-				victory
+				victory do
+					puts "\nCPU Combination: "
+					cpu.show
+				end
 			end
 		end
 		puts "Guesses: #{guesses.size}\tGuesses left: #{12-guesses.size}"
@@ -166,6 +176,20 @@ def single_player
 	end
 end
 
+def multiplayer(p1,p2)
+	puts "\nWho would like to set the code? ('1': P1 | '2': P2)"
+	case gets.chomp
+	when '1'
+		code_holder = p1
+	when '2'
+		code_holder = p2
+	else
+		input_error
+	end
+
+	puts code_holder.name
+end
+
 def run
 	puts "\n-----Welcome to Mastermind!-----\n"
 	puts "\t'1': Single Player
@@ -175,7 +199,13 @@ def run
 	when '1'
 		single_player
 	when '2'
-		multi_player
+		puts "\n-----Multi-Player!-----"
+		puts "\nEnter a name for Player 1:"
+		p1 = Player.new(gets.chomp)
+		puts "Enter a name for Player 2:"
+		p2 = Player.new(gets.chomp)
+
+		multi_player(p1,p2)
 	else
 		input_error
 		run
